@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ImitateJS</title>
+  <script src="./js/clear.min.js"></script>
+</head>
+<body>
+  <canvas id="can"></canvas>
+  <script>
+    function colorRGB(str){
+      var reg16=/^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/
+      var regRGB=/^(rgb\(|RGB\()[\s\S]+\)/
+      var co=str.toLowerCase()
+      var res=[]
+      if(reg16.test(co)){
+        if(co.length===4){
+          var conew="#"
+          for(var i=1;i<4;i+=1){
+            conew+=co.slice(i,i+1).concat(co.slice(i,i+1))
+          }
+          co=conew
+        }
+        for(var i=1;i<7;i+=2){
+          res.push(parseInt("0x"+co.slice(i,i+2)))
+        }
+        return res
+      }
+      if(regRGB.test(co)){
+        res=co.replace(/( |\(|\)|rgb|RGB)+/g,"").split(",")
+        return res
+      }
+    }
+    var canvas=C.one('#can')
+	  var ctx=canvas.getContext('2d')
+    var width=400
+    var height=400
+    var color="#f00"
+    var [r,g,b]=colorRGB(color)
+    r=Math.random()*256
+    g=Math.random()*256
+    b=Math.random()*256
+    canvas.width=width
+    canvas.height=height
+    /* 纵奇 */
+    ctx.beginPath()
+    ctx.fillStyle=`rgba(${r},${g},${b},0.2)`
+    var wi=width/5
+    var hi=height/5
+    for(let i=0;i<=wi*4;i=i+2*wi){
+      ctx.rect(i,0,wi,height)
+    }
+    ctx.fill()
+    /* 纵偶 */
+    ctx.beginPath()
+    ctx.fillStyle=`rgba(${r},${g},${b},0.4)`
+    for(let i=wi;i<=wi*3;i=i+2*wi){
+      ctx.rect(i,0,wi,height)
+    }
+    ctx.fill()
+    /* 横奇 */
+    ctx.beginPath()
+    ctx.fillStyle=`rgba(${r},${g},${b},0.4)`
+    for(let i=0;i<=hi*4;i=i+2*hi){
+      ctx.rect(0,i,width,hi)
+    }
+    ctx.fill()
+    /* 横偶 */
+    ctx.beginPath()
+    ctx.fillStyle=`rgba(${r},${g},${b},0.2)`
+    for(let i=hi;i<=hi*3;i=i+2*hi){
+      ctx.rect(0,i,width,hi)
+    }
+    ctx.fill()
+    /* 文字 */
+    ctx.beginPath()
+    ctx.fillStyle="#fff"
+    ctx.font=`bold ${0.17*width}px 'Source Han Sans CN'`
+    var str=String(Math.random()).split('.')[1]
+    var res=parseInt(str.match(new RegExp(`[1-9]\\d{7}`))[0])
+    ctx.fillText(res,0.12*width,0.5*height+0.06*width)
+  </script>
+</body>
+</html>
