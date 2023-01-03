@@ -1,1 +1,0 @@
-uglifyjs ./clear.js -m -c -o ./clear.min.js
