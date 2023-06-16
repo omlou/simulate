@@ -1,72 +1,47 @@
 import {getQuery,unid,colorRGB} from "@xlou/webtools"
-import {ajax} from 'clear-ajax'
-// import axios from 'axios'
 
 declare global{
-  interface Window{
-    simulate:Simulate
-  }
   interface XMLHttpRequest{
-    serviceOpen:Function
-    serviceSend:Function
+    "__SIMULATE_SERVICE_OBJECT__":any
   }
 }
-export declare interface SimulateConfig {
-  wait:number
-}
-declare interface SetConfig {
-  getConfig:()=>SimulateConfig
-  setConfig:(obj:SimulateConfig)=>void
-}
-export declare interface Simulate {
-  fixed:(n:string|number,f?:string|number)=>string
-  int:(n:string|number)=>number
-  id:()=>string
-  img:(width?:number,height?:number,color?:string)=>string
-  server:((obj:object)=>void)|SetConfig
-}
-
-export function fixed(n:string|number,f:string|number=2){
+export function fixed(n:string|number,f:(string|number)=2):string{
   n=Number(n),f=Number(f)
-  var str=String(Math.random()).split('.')[1]
-  var one=""
-  var res=""
+  let
+    str=String(Math.random()).split('.')[1],
+    one="",
+    res=""
   if(n===1){
     one=str.slice(0,1)
     str=str.slice(1)
   }else{
-    var match=str.match(new RegExp(`([1-9]\\d{${n-1}})(\\d*)`))
+    let match=str.match(new RegExp(`([1-9]\\d{${n-1}})(\\d*)`))
     if(match!==null){
       one=match[1]
       str=match[2]
     }
   }
-  if(f===0){
-    res=one
-  }else{
-    res=one+"."+str.slice(0,f)
-  }
+  res=f===0?one:(one+"."+str.slice(0,f))
   return res
 }
-
-export function int(n:string|number){
+export function int(n:string|number):number{
   n=Number(n)
-  var str=String(Math.random()).split('.')[1]
-  var res=parseInt(str.match(new RegExp(`[1-9]\\d{${n-1}}`))[0])
+  let str=String(Math.random()).split('.')[1]
+  let match=str.match(new RegExp(`[1-9]\\d{${n-1}}`))||["0"]
+  let res=parseInt(match[0])
   return res
 }
-
 export const id=unid
-
-export function img(width:number=512,height:number=512,color?:string){
+export function img(width:number=512,height:number=512,color?:string):string{
   if(!document)throw "Function img is only supported in the browser environment"
-  var canvas=document.createElement('canvas')
-  var ctx=canvas.getContext('2d')
-  var rgb=color?colorRGB(color):[Math.random()*256,Math.random()*256,Math.random()*256]
-  var [r,g,b]=rgb
+  let canvas=document.createElement('canvas')
+  let ctx=canvas.getContext('2d')
+  let rgb=color?colorRGB(color):[Math.random()*256,Math.random()*256,Math.random()*256]
+  let [r,g,b]=rgb
   canvas.width=width
   canvas.height=height
   /* 纵奇 */
+  if(!ctx)throw "Canvas creation failed"
   ctx.beginPath()
   ctx.fillStyle=`rgba(${r},${g},${b},0.2)`
   var wi=width/5
@@ -106,12 +81,20 @@ export function img(width:number=512,height:number=512,color?:string){
   */
   return canvas.toDataURL()
 }
-
-const serverConfig={
+export interface ServiceConfig{
+  wait?:number
+}
+const serverConfig:ServiceConfig={
   wait:500
 }
-
-export function server(obj){
+export interface PathConfig{
+  type?:string,
+  response:(params:any)=>any
+}
+export interface ServerParams{
+  [prop:string]:PathConfig
+}
+export function server(obj:ServerParams){
   const {wait}=serverConfig
   XMLHttpRequest.prototype.serviceOpen=XMLHttpRequest.prototype.open
   XMLHttpRequest.prototype.open=function(){
@@ -121,13 +104,13 @@ export function server(obj){
     type=type.toUpperCase()
     for(let i in obj){
       let item=obj[i]
-      item.type=item.type.toUpperCase()
+      item.type=(item.type||'get').toUpperCase()
       if(i===pathname&&type===item.type){
-        Object.defineProperty(this,'_servicestoreobject',{
+        Object.defineProperty(this,'__SIMULATE_SERVICE_OBJECT__',{
           configurable:true,
           value:{
             isService:true,
-            itemFunc:item.method,
+            itemFunc:item.response,
             type,pathname,params
           }
         })
@@ -137,9 +120,10 @@ export function server(obj){
   }
   XMLHttpRequest.prototype.serviceSend=XMLHttpRequest.prototype.send
   XMLHttpRequest.prototype.send=function(){
-    if(this._servicestoreobject){
+    let simulateServiceObject=this["__SIMULATE_SERVICE_OBJECT__"]
+    if(simulateServiceObject){
       var obj=arguments[0]
-      var {params,pathname,type,itemFunc}=this._servicestoreobject
+      var {params,pathname,type,itemFunc}=simulateServiceObject
       if(obj){
         try{
           obj=JSON.parse(obj)
@@ -172,28 +156,6 @@ export function server(obj){
 server.getConfig=function(){
   return {...serverConfig}
 }
-server.setConfig=function(obj){
+server.setConfig=function(obj:ServiceConfig){
   Object.assign(serverConfig,obj)
 }
-
-if(window)window.simulate={fixed,int,id,img,server}
-
-server({
-  "/server/getdata":{
-    type:'post',
-    method:({params})=>{
-      return params
-    }
-  }
-})
-ajax({
-  method:'post',
-  url:"/server/getdata",
-  params:{
-    id:5
-  }
-})
-.then(res=>{
-  console.log(res)
-  
-})

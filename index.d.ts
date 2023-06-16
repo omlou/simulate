@@ -1,6 +1,6 @@
 declare global{
   interface Window{
-    simulate:Simulate
+    Simulate:Simulate
   }
   interface XMLHttpRequest{
     serviceOpen:Function
