@@ -2,7 +2,7 @@
   "scripts": {
     "start": "gulp serve",
     "update": "cross-env NODE_ENV=development rollup -c",
-    "commit": "npm publish --access public"
+    "commit": "gulp simplify&&npm publish --access public&&gulp dev"
   },
   "devDependencies": {
     "gulp-webserver": "^0.9.1"

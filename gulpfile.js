@@ -1,11 +1,13 @@
 import webserver from 'gulp-webserver'
 import fs from 'fs-extra'
 import pkg from 'gulp'
-const {series,src} = pkg
+const {src} = pkg
 
 const simplify=async function(){
-  const npm=await fs.readJSON('package.json')
-  const serve=await fs.readJSON('serve.json')
+  let npm=await fs.readJSON('package.json')
+  let serve=await fs.readJSON('serve.json')
+  let readme=await fs.readFile('readme.md','utf8')
+  /* change package.json */
   delProp(serve,npm)
   function delProp(obj,target){
     for(let i in obj){
@@ -22,7 +24,30 @@ const simplify=async function(){
       }
     }
   }
+  /* update version */
+  npm.version=updateVersion(npm.version)
+  function updateVersion(str){
+    let arr=str.split(".").map(item=>Number(item))
+    let thr=arr[2]+1
+    if(thr>=100){
+      let two=arr[1]+1
+      if(two>=100){
+        arr[0]=arr[0]+1
+        arr[1]=arr[2]=0
+      }else{
+        arr[1]=two
+        arr[2]=0
+      }
+    }else{
+      arr[2]=thr
+    }
+    return arr.join(".")
+  }
+  console.log(readme)
+  /* update readme.md */
+  readme=readme.replace(/\/simulate@\d+\.\d+\.\d+\//g,`/simulate@${npm.version}/`)
   await fs.writeJSON('package.json',npm,{spaces:2})
+  await fs.writeFile('readme.md',readme)
 }
 
 const dev=async function(){
@@ -44,14 +69,14 @@ const dev=async function(){
   await fs.writeJSON('package.json',npm,{spaces:2})
 }
 
-const serve=series(dev,function(){
+const serve=function(){
   return src('./').pipe(webserver({
     host:'127.0.0.1',
     port:'5000',
     livereload:true,
     open:'docs/index.html'
   }))
-})
+}
 export {
   serve,simplify,dev
 }

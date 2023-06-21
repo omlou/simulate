@@ -1,6 +1,6 @@
 {
-  "name": "simulatejs",
-  "version": "1.0.0",
+  "name": "@xlou/simulate",
+  "version": "1.0.3",
   "main": "./dist/umd/simulatejs.min.js",
   "module": "./dist/es/simulate.min.js",
   "browser": "./dist/umd/simulate.min.js",
@@ -39,7 +39,7 @@
     "build": "cross-env NODE_ENV=production rollup -c",
     "start": "gulp serve",
     "update": "cross-env NODE_ENV=development rollup -c",
-    "commit": "npm publish --access public"
+    "commit": "gulp simplify&&npm publish --access public&&gulp dev"
   },
   "author": "Louis Xu",
   "license": "MIT",
@@ -52,12 +52,12 @@
     "cross-env": "^7.0.3",
     "fs-extra": "^11.1.1",
     "gulp": "^4.0.2",
-    "gulp-webserver": "^0.9.1",
     "rollup": "^3.24.0",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-serve": "^2.0.2",
     "rollup-plugin-typescript2": "^0.34.1",
-    "typescript": "^4.9.5"
+    "typescript": "^4.9.5",
+    "gulp-webserver": "^0.9.1"
   },
   "dependencies": {
     "@xlou/webtools": "^1.1.3",
