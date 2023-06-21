@@ -1,5 +1,7 @@
 import webserver from 'gulp-webserver'
 import fs from 'fs-extra'
+import pkg from 'gulp'
+const {series,src} = pkg
 
 const simplify=async function(){
   const npm=await fs.readJSON('package.json')
@@ -42,14 +44,14 @@ const dev=async function(){
   await fs.writeJSON('package.json',npm,{spaces:2})
 }
 
-const serve=function(){
+const serve=series(dev,function(){
   return src('./').pipe(webserver({
     host:'127.0.0.1',
     port:'5000',
     livereload:true,
     open:'docs/index.html'
   }))
-}
+})
 export {
   serve,simplify,dev
 }

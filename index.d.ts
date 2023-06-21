@@ -19,10 +19,10 @@ export declare interface Simulate {
   int:(n:string|number)=>number
   id:()=>string
   img:(width?:number,height?:number,color?:string)=>string
-  server:((obj:object)=>void)|SetConfig
+  serve:((obj:object)=>void)|SetConfig
 }
 export declare const fixed:Simulate["fixed"]
 export declare const int:Simulate["int"]
 export declare const id:Simulate["id"]
 export declare const img:Simulate["img"]
-export declare const server:Simulate["server"]
+export declare const serve:Simulate["serve"]

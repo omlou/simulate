@@ -1,5 +1,3 @@
-
-(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
 (function (factory) {
     typeof define === 'function' && define.amd ? define(factory) :
     factory();
@@ -22,6 +20,55 @@
     /* global Reflect, Promise */
 
 
+    var __assign = function() {
+        __assign = Object.assign || function __assign(t) {
+            for (var s, i = 1, n = arguments.length; i < n; i++) {
+                s = arguments[i];
+                for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+            return t;
+        };
+        return __assign.apply(this, arguments);
+    };
+
+    function __awaiter(thisArg, _arguments, P, generator) {
+        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+        return new (P || (P = Promise))(function (resolve, reject) {
+            function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+            function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+            step((generator = generator.apply(thisArg, _arguments || [])).next());
+        });
+    }
+
+    function __generator(thisArg, body) {
+        var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+        return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+        function verb(n) { return function (v) { return step([n, v]); }; }
+        function step(op) {
+            if (f) throw new TypeError("Generator is already executing.");
+            while (g && (g = 0, op[0] && (_ = 0)), _) try {
+                if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+                if (y = 0, t) op = [op[0] & 2, t.value];
+                switch (op[0]) {
+                    case 0: case 1: t = op; break;
+                    case 4: _.label++; return { value: op[1], done: false };
+                    case 5: _.label++; y = op[1]; op = [0]; continue;
+                    case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                    default:
+                        if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                        if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                        if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                        if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                        if (t[2]) _.ops.pop();
+                        _.trys.pop(); continue;
+                }
+                op = body.call(thisArg, _);
+            } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+            if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+        }
+    }
+
     function __read(o, n) {
         var m = typeof Symbol === "function" && o[Symbol.iterator];
         if (!m) return o;
@@ -39,6 +86,16 @@
         return ar;
     }
 
+    function __spreadArray(to, from, pack) {
+        if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+            if (ar || !(i in from)) {
+                if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+                ar[i] = from[i];
+            }
+        }
+        return to.concat(ar || Array.prototype.slice.call(from));
+    }
+
     var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
     var webtools_min = {exports: {}};
@@ -49,6 +106,32 @@
 
     var webtools_minExports = webtools_min.exports;
 
+    function fixed(n, f) {
+        if (f === void 0) { f = 2; }
+        n = Number(n), f = Number(f);
+        var str = String(Math.random()).split('.')[1], one = "", res = "";
+        if (n === 1) {
+            one = str.slice(0, 1);
+            str = str.slice(1);
+        }
+        else {
+            var match = str.match(new RegExp("([1-9]\\d{".concat(n - 1, "})(\\d*)")));
+            if (match !== null) {
+                one = match[1];
+                str = match[2];
+            }
+        }
+        res = f === 0 ? one : (one + "." + str.slice(0, f));
+        return res;
+    }
+    function int(n) {
+        n = Number(n);
+        var str = String(Math.random()).split('.')[1];
+        var match = str.match(new RegExp("[1-9]\\d{".concat(n - 1, "}"))) || ["0"];
+        var res = parseInt(match[0]);
+        return res;
+    }
+    var id = webtools_minExports.unid;
     function img(width, height, color) {
         if (width === void 0) { width = 512; }
         if (height === void 0) { height = 512; }
@@ -102,9 +185,194 @@
         */
         return canvas.toDataURL();
     }
-
-    window.onload = function () {
-        app.innerHTML = "<img id=\"img\" src=\"".concat(img(), "\" alt=\"\">");
+    var serveConfig = {
+        wait: 500
     };
+    function serve(obj) {
+        var wait = serveConfig.wait;
+        var fetchCopy = window.fetch;
+        window.fetch = function () {
+            console.log("arguments", arguments);
+            var url = arguments[0];
+            var options = (arguments[1] || { method: "get", body: null });
+            var method = options.method, body = options.body;
+            var pathname = url.split('?')[0];
+            var params = webtools_minExports.getQuery(url);
+            method = method.toUpperCase();
+            var _loop_1 = function (i) {
+                var item = obj[i];
+                item.type = (item.type || 'get').toUpperCase();
+                if (i === pathname && method === item.type) {
+                    if (body) {
+                        try {
+                            body = JSON.parse(body);
+                        }
+                        catch (err) {
+                            body = webtools_minExports.getQuery(body);
+                        }
+                    }
+                    var res_1 = item.response({
+                        params: params,
+                        type: method,
+                        url: pathname,
+                        data: body
+                    });
+                    var response_1 = {
+                        ok: true, status: 200, statusText: "OK",
+                        url: url,
+                        type: "basic", redirected: false, headers: new Headers(),
+                        text: function () {
+                            return new Promise(function (resolve) {
+                                resolve(res_1);
+                            });
+                        },
+                        json: function () {
+                            return new Promise(function (resolve) {
+                                resolve(res_1);
+                            });
+                        },
+                        clone: function () {
+                            return __assign({}, response_1);
+                        }
+                    };
+                    return { value: new Promise(function (resolve) {
+                            setTimeout(function () {
+                                resolve(response_1);
+                            }, (wait || 0));
+                        }) };
+                }
+            };
+            for (var i in obj) {
+                var state_1 = _loop_1(i);
+                if (typeof state_1 === "object")
+                    return state_1.value;
+            }
+            return fetchCopy.apply(void 0, __spreadArray([], __read(arguments), false));
+        };
+        XMLHttpRequest.prototype.serviceOpen = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.open = function () {
+            var _a = __read(arguments, 2), type = _a[0], url = _a[1];
+            var pathname = url.split('?')[0];
+            var params = webtools_minExports.getQuery(url);
+            type = type.toUpperCase();
+            for (var i in obj) {
+                var item = obj[i];
+                item.type = (item.type || 'get').toUpperCase();
+                if (i === pathname && type === item.type) {
+                    Object.defineProperty(this, '__SIMULATE_SERVICE_OBJECT__', {
+                        configurable: true,
+                        value: {
+                            isService: true,
+                            itemFunc: item.response,
+                            type: type,
+                            pathname: pathname,
+                            params: params
+                        }
+                    });
+                    break;
+                }
+            }
+            this.serviceOpen.apply(this, __spreadArray([], __read(arguments), false));
+        };
+        XMLHttpRequest.prototype.serviceSend = XMLHttpRequest.prototype.send;
+        XMLHttpRequest.prototype.send = function () {
+            var _this = this;
+            var simulateServiceObject = this["__SIMULATE_SERVICE_OBJECT__"];
+            if (simulateServiceObject) {
+                var obj = arguments[0];
+                var params = simulateServiceObject.params, pathname = simulateServiceObject.pathname, type = simulateServiceObject.type, itemFunc = simulateServiceObject.itemFunc;
+                if (obj) {
+                    try {
+                        obj = JSON.parse(obj);
+                    }
+                    catch (err) {
+                        obj = webtools_minExports.getQuery(obj);
+                    }
+                }
+                var response = itemFunc({
+                    params: params,
+                    type: type,
+                    url: pathname,
+                    data: obj
+                });
+                Object.defineProperty(this, 'responseText', { configurable: true, value: response });
+                Object.defineProperty(this, 'responseXML', { configurable: true, value: response });
+                Object.defineProperty(this, 'response', { configurable: true, value: response });
+                Object.defineProperty(this, 'status', { configurable: true, value: 200 });
+                Object.defineProperty(this, 'statusText', { configurable: true, value: "OK" });
+                setTimeout(function () {
+                    _this.dispatchEvent(new Event('load'));
+                }, (wait || 0));
+            }
+            else {
+                this.serviceSend.apply(this, __spreadArray([], __read(arguments), false));
+            }
+        };
+    }
+    serve.getConfig = function () {
+        return __assign({}, serveConfig);
+    };
+    serve.setConfig = function (obj) {
+        Object.assign(serveConfig, obj);
+    };
+
+    var clearAjax_min = {exports: {}};
+
+    (function (module, exports) {
+    	!function(e,t){module.exports=t();}(commonjsGlobal,(function(){function e(e){let t=[];if(e instanceof Object)for(let o in e)t.push(encodeURIComponent(o)+"="+encodeURIComponent(e[o]));return t.join("&")}return {ajax:function(t){return new Promise((function(o,r){var n=new XMLHttpRequest;n.addEventListener("load",(e=>{if(t.getResponse){var s={},a=n.getAllResponseHeaders().split("\r\n");for(let e of a){let t=e.split(": ");t[0]&&(s[t[0]]=t[1]);}t.getResponse(s);}var{status:d}=n;200==d?o(n.response):r({status:d,result:n,error:e});})),n.addEventListener("error",(e=>{r({status:n.status,result:n,error:e});})),n.addEventListener("timeout",(e=>{r({status:n.status,result:n,error:e});})),t.uploadProgress&&(n.upload.addEventListener("loadstart",(e=>{t.uploadProgress(e);})),n.upload.addEventListener("progress",(e=>{t.uploadProgress(e);})),n.upload.addEventListener("load",(e=>{t.uploadProgress(e);})),n.upload.addEventListener("loadend",(e=>{t.uploadProgress(e);})),n.upload.addEventListener("error",(e=>{t.uploadProgress(e);})));t.downloadProgress&&(n.addEventListener("loadstart",(e=>{t.downloadProgress(e);})),n.addEventListener("progress",(e=>{t.downloadProgress(e);})),n.addEventListener("loadend",(e=>{t.downloadProgress(e);})));var s=t.method,{url:a,params:d={},data:i={},headers:p,timeout:u,responseType:l,withCredentials:c}=t,f=!1;s=s?s.toUpperCase():"GET";new Set(["GET","DELETE","HEAD","OPTIONS","TRACE"]).has(s)&&(f=!0);a+=function(t,o){if(!o)return "";var r=o instanceof Object?e(o):o;return -1!==t.indexOf("?")?"&"+r:"?"+r}(a,d),n.open(s,a,!0),void 0!==c&&(n.withCredentials=c);n.responseType=l||"json";for(let e in p)n.setRequestHeader(e,p[e]),e=e.toLowerCase();p&&p["content-type"]||"FormData"==i.constructor.name?p&&p["content-type"]&&-1!==p["content-type"].indexOf("application/json")&&i instanceof Object&&(i=JSON.stringify(i)):n.setRequestHeader("content-type","application/x-www-form-urlencoded;charset=UTF-8");n.timeout=u||6e4,n.send(f?null:function(t){return t?"string"==typeof t||t instanceof FormData?t:e(t):null}(i));}))}}})); 
+    } (clearAjax_min));
+
+    var clearAjax_minExports = clearAjax_min.exports;
+
+    serve({
+        "/getData": {
+            type: 'post',
+            response: function (q) {
+                console.log("simulate", q);
+                return {
+                    code: 200
+                };
+            }
+        }
+    });
+    var image = img(256, 100, 'rgb(255,0,0)');
+    console.log(image, int(3), id(), fixed(7));
+    window.onload = function () {
+        app.innerHTML = "<img src=\"".concat(image, "\"/>");
+    };
+    clearAjax_minExports.ajax({
+        method: 'get',
+        url: '/getData?id=12'
+    })
+        .then(function (res) {
+        console.log("ajax", res);
+    });
+    fetch("/getData?id=12", {
+        method: "post",
+        body: JSON.stringify({ a: 1 })
+    })
+        .then(function (res) { return __awaiter(void 0, void 0, void 0, function () {
+        var _a, _b, _c, _d, _e, _f;
+        return __generator(this, function (_g) {
+            switch (_g.label) {
+                case 0:
+                    _b = (_a = console).log;
+                    _c = ["fetch1", res];
+                    return [4 /*yield*/, res.json()];
+                case 1:
+                    _b.apply(_a, _c.concat([_g.sent()]));
+                    _e = (_d = console).log;
+                    _f = ["fetch1clone", res.clone()];
+                    return [4 /*yield*/, res.clone().json()];
+                case 2:
+                    _e.apply(_d, _f.concat([_g.sent()]));
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    // fetch("/getData?id=13")
+    // .then(async res=>{
+    //   console.log("fetch2",res,await res.json())
+    // })
 
 }));

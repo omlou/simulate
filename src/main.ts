@@ -84,18 +84,69 @@ export function img(width:number=512,height:number=512,color?:string):string{
 export interface ServiceConfig{
   wait?:number
 }
-const serverConfig:ServiceConfig={
+const serveConfig:ServiceConfig={
   wait:500
 }
 export interface PathConfig{
   type?:string,
   response:(params:any)=>any
 }
-export interface ServerParams{
+export interface ServeParams{
   [prop:string]:PathConfig
 }
-export function server(obj:ServerParams){
-  const {wait}=serverConfig
+export function serve(obj:ServeParams){
+  const {wait}=serveConfig
+  let fetchCopy:any=window.fetch
+  window.fetch=function(){
+    console.log("arguments",arguments)
+    let url=arguments[0]
+    let options=(arguments[1]||{method:"get",body:null})
+    let {method,body}=options
+    let pathname=url.split('?')[0]
+    let params=getQuery(url)
+    method=method.toUpperCase()
+    for(let i in obj){
+      let item=obj[i]
+      item.type=(item.type||'get').toUpperCase()
+      if(i===pathname&&method===item.type){
+        if(body){
+          try{
+            body=JSON.parse(body)
+          }catch(err){
+            body=getQuery(body)
+          }
+        }
+        let res=item.response({
+          params,
+          type:method,
+          url:pathname,
+          data:body
+        })
+        let response:any={
+          ok:true,status:200,statusText:"OK",url,type:"basic",redirected:false,headers:new Headers(),
+          text(){
+            return new Promise((resolve)=>{
+              resolve(res)
+            })
+          },
+          json(){
+            return new Promise((resolve)=>{
+              resolve(res)
+            })
+          },
+          clone(){
+            return {...response}
+          }
+        }
+        return new Promise((resolve)=>{
+          setTimeout(()=>{
+            resolve(response)
+          },(wait||0))
+        })
+      }
+    }
+    return fetchCopy(...arguments)
+  }
   XMLHttpRequest.prototype.serviceOpen=XMLHttpRequest.prototype.open
   XMLHttpRequest.prototype.open=function(){
     var [type,url]=arguments
@@ -114,6 +165,7 @@ export function server(obj:ServerParams){
             type,pathname,params
           }
         })
+        break
       }
     }
     this.serviceOpen(...arguments)
@@ -141,21 +193,17 @@ export function server(obj:ServerParams){
       Object.defineProperty(this,'response',{configurable:true,value:response})
       Object.defineProperty(this,'status',{configurable:true,value:200})
       Object.defineProperty(this,'statusText',{configurable:true,value:"OK"})
-      if(wait){
-        setTimeout(()=>{
-          this.dispatchEvent(new Event('load'))
-        },wait)
-      }else{
+      setTimeout(()=>{
         this.dispatchEvent(new Event('load'))
-      }
+      },(wait||0))
     }else{
       this.serviceSend(...arguments)
     }
   }
 }
-server.getConfig=function(){
-  return {...serverConfig}
+serve.getConfig=function(){
+  return {...serveConfig}
 }
-server.setConfig=function(obj:ServiceConfig){
-  Object.assign(serverConfig,obj)
+serve.setConfig=function(obj:ServiceConfig){
+  Object.assign(serveConfig,obj)
 }

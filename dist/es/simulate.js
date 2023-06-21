@@ -142,11 +142,70 @@ function img(width, height, color) {
     */
     return canvas.toDataURL();
 }
-var serverConfig = {
+var serveConfig = {
     wait: 500
 };
-function server(obj) {
-    var wait = serverConfig.wait;
+function serve(obj) {
+    var wait = serveConfig.wait;
+    var fetchCopy = window.fetch;
+    window.fetch = function () {
+        console.log("arguments", arguments);
+        var url = arguments[0];
+        var options = (arguments[1] || { method: "get", body: null });
+        var method = options.method, body = options.body;
+        var pathname = url.split('?')[0];
+        var params = webtools_minExports.getQuery(url);
+        method = method.toUpperCase();
+        var _loop_1 = function (i) {
+            var item = obj[i];
+            item.type = (item.type || 'get').toUpperCase();
+            if (i === pathname && method === item.type) {
+                if (body) {
+                    try {
+                        body = JSON.parse(body);
+                    }
+                    catch (err) {
+                        body = webtools_minExports.getQuery(body);
+                    }
+                }
+                var res_1 = item.response({
+                    params: params,
+                    type: method,
+                    url: pathname,
+                    data: body
+                });
+                var response_1 = {
+                    ok: true, status: 200, statusText: "OK",
+                    url: url,
+                    type: "basic", redirected: false, headers: new Headers(),
+                    text: function () {
+                        return new Promise(function (resolve) {
+                            resolve(res_1);
+                        });
+                    },
+                    json: function () {
+                        return new Promise(function (resolve) {
+                            resolve(res_1);
+                        });
+                    },
+                    clone: function () {
+                        return __assign({}, response_1);
+                    }
+                };
+                return { value: new Promise(function (resolve) {
+                        setTimeout(function () {
+                            resolve(response_1);
+                        }, (wait || 0));
+                    }) };
+            }
+        };
+        for (var i in obj) {
+            var state_1 = _loop_1(i);
+            if (typeof state_1 === "object")
+                return state_1.value;
+        }
+        return fetchCopy.apply(void 0, __spreadArray([], __read(arguments), false));
+    };
     XMLHttpRequest.prototype.serviceOpen = XMLHttpRequest.prototype.open;
     XMLHttpRequest.prototype.open = function () {
         var _a = __read(arguments, 2), type = _a[0], url = _a[1];
@@ -167,6 +226,7 @@ function server(obj) {
                         params: params
                     }
                 });
+                break;
             }
         }
         this.serviceOpen.apply(this, __spreadArray([], __read(arguments), false));
@@ -197,25 +257,20 @@ function server(obj) {
             Object.defineProperty(this, 'response', { configurable: true, value: response });
             Object.defineProperty(this, 'status', { configurable: true, value: 200 });
             Object.defineProperty(this, 'statusText', { configurable: true, value: "OK" });
-            if (wait) {
-                setTimeout(function () {
-                    _this.dispatchEvent(new Event('load'));
-                }, wait);
-            }
-            else {
-                this.dispatchEvent(new Event('load'));
-            }
+            setTimeout(function () {
+                _this.dispatchEvent(new Event('load'));
+            }, (wait || 0));
         }
         else {
             this.serviceSend.apply(this, __spreadArray([], __read(arguments), false));
         }
     };
 }
-server.getConfig = function () {
-    return __assign({}, serverConfig);
+serve.getConfig = function () {
+    return __assign({}, serveConfig);
 };
-server.setConfig = function (obj) {
-    Object.assign(serverConfig, obj);
+serve.setConfig = function (obj) {
+    Object.assign(serveConfig, obj);
 };
 
-export { fixed, id, img, int, server };
+export { fixed, id, img, int, serve };

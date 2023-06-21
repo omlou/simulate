@@ -8,7 +8,7 @@
     "gulp-webserver": "^0.9.1"
   },
   "dependencies": {
-    "axios": "^1.2.2",
+    "axios": "^1.4.0",
     "clear-ajax": "^1.0.0"
   }
 }
