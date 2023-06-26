@@ -8,6 +8,7 @@
     "gulp-webserver": "^0.9.1"
   },
   "dependencies": {
+    "@xlou/simulate": "^1.0.6",
     "axios": "^1.4.0",
     "clear-ajax": "^1.0.0"
   }

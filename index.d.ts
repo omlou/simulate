@@ -14,12 +14,25 @@ declare interface SetConfig {
   getConfig:()=>SimulateConfig
   setConfig:(obj:SimulateConfig)=>void
 }
+
+declare interface RequestArgs {
+  params:any,
+  type:string,
+  url:string,
+  data:any
+}
+declare interface ApiOption {
+  [prop:string]:{
+    type?:string,
+    response:(req:RequestArgs)=>any
+  }
+}
 export declare interface Simulate {
   fixed:(n:string|number,f?:string|number)=>string
   int:(n:string|number)=>number
   id:()=>string
   img:(width?:number,height?:number,color?:string)=>string
-  serve:((obj:object)=>void)|SetConfig
+  serve:((obj:ApiOption)=>void)&SetConfig
 }
 export declare const fixed:Simulate["fixed"]
 export declare const int:Simulate["int"]

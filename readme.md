@@ -9,7 +9,7 @@
 #### Using in a traditional project
 
 ```html
-<script src="https://unpkg.com/@xlou/simulate@1.0.3/dist/umd/simulate.min.js"></script>
+<script src="https://unpkg.com/@xlou/simulate@1.0.6/dist/umd/simulate.min.js"></script>
 <!-- It is recommended to download and use the file -->
 <script>
   /* After importing this JS file, the Simulate object will be assigned to the window */
@@ -165,7 +165,7 @@ img(256,256,'#f00') // The color supports hexadecimal strings and rgb function s
 #### 在传统项目中使用
 
 ```html
-<script src="https://unpkg.com/@xlou/simulate@1.0.3/dist/umd/simulate.min.js"></script>
+<script src="https://unpkg.com/@xlou/simulate@1.0.6/dist/umd/simulate.min.js"></script>
 <!-- 建议下载下来使用 -->
 <script>
   /* 引入了该 js 文件后，会在 window 上赋值 Simulate 对象 */

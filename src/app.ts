@@ -1,4 +1,4 @@
-import {img,id,serve,fixed,int} from "./main"
+import {img,id,serve,fixed,int} from "@xlou/simulate"
 import {ajax} from 'clear-ajax'
 declare let app:any
 serve({
