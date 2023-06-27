@@ -1,11 +1,13 @@
 import webserver from 'gulp-webserver'
 import fs from 'fs-extra'
 import pkg from 'gulp'
+import minimist from 'minimist'
+import {exec} from 'child_process'
 const {src} = pkg
 
 const simplify=async function(){
   let npm=await fs.readJSON('package.json')
-  let serve=await fs.readJSON('serve.json')
+  let serve=await fs.readJSON('./src/assets/serve.json')
   let readme=await fs.readFile('readme.md','utf8')
   /* change package.json */
   delProp(serve,npm)
@@ -43,7 +45,6 @@ const simplify=async function(){
     }
     return arr.join(".")
   }
-  console.log(readme)
   /* update readme.md */
   readme=readme.replace(/\/simulate@\d+\.\d+\.\d+\//g,`/simulate@${npm.version}/`)
   await fs.writeJSON('package.json',npm,{spaces:2})
@@ -52,7 +53,7 @@ const simplify=async function(){
 
 const dev=async function(){
   const npm=await fs.readJSON('package.json')
-  const serve=await fs.readJSON('serve.json')
+  const serve=await fs.readJSON('./src/assets/serve.json')
   addProp(serve,npm)
   function addProp(obj,target){
     for(let i in obj){
@@ -69,6 +70,31 @@ const dev=async function(){
   await fs.writeJSON('package.json',npm,{spaces:2})
 }
 
+const i18n=async function(){
+  let options = minimist(process.argv.slice(2), {string: 'lang', default: 'en'})
+  if(! /^[a-zA-Z_]{2,}$/.test(options.lang)) options.lang = "en"
+  let i18n=await fs.readFile(`./src/assets/i18n-${options.lang}.md`, 'utf8')
+  let {version}=await fs.readJSON('package.json')
+  i18n = i18n.replace(/\/simulate@\d+\.\d+\.\d+\//g, `/simulate@${version}/`)
+  await fs.writeFile('readme.md', i18n)
+  if(options.lang === "zh"){
+    execFunc("git remote rename origin github && git remote rename gitee origin")
+  }else{
+    execFunc("git remote rename origin gitee && git remote rename github origin")
+  }
+  
+}
+
+const execFunc = function(str){
+  exec(str, function(err, stdout, stderr){
+    if(err === null){
+      console.log("git remote switched successfully!")
+    }else{
+      console.log(stdout, stderr)
+    }
+  })
+}
+
 const serve=function(){
   return src('./').pipe(webserver({
     host:'127.0.0.1',
@@ -78,5 +104,5 @@ const serve=function(){
   }))
 }
 export {
-  serve,simplify,dev
+  serve,simplify,dev,i18n
 }

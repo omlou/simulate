@@ -9,7 +9,7 @@
 #### Using in a traditional project
 
 ```html
-<script src="https://unpkg.com/@xlou/simulate@1.0.6/dist/umd/simulate.min.js"></script>
+<script src="https://unpkg.com/@xlou/simulate@1.0.0/dist/umd/simulate.min.js"></script>
 <!-- It is recommended to download and use the file -->
 <script>
   /* After importing this JS file, the Simulate object will be assigned to the window */
