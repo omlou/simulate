@@ -35,10 +35,11 @@
   "unpkg": "dist/umd/simulate.min.js",
   "jsdelivr": "dist/umd/simulate.min.js",
   "scripts": {
-    "build": "cross-env NODE_ENV=production&&gulp i18n --lang %npm_config_host%&&rollup -c",
+    "build": "cross-env NODE_ENV=production&&gulp i18n --host %npm_config_host%&&rollup -c",
     "start": "gulp serve",
     "update": "cross-env NODE_ENV=development rollup -c",
-    "commit": "gulp simplify --type %npm_config_host%&&npm publish --access public&&gulp dev"
+    "commit": "gulp simplify --type %npm_config_host%&&npm publish --access public&&gulp dev",
+    "push": "gulp push --host %npm_config_host% --port %npm_config_port%"
   },
   "author": "Louis Xu",
   "license": "MIT",

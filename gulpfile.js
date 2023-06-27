@@ -70,25 +70,30 @@ const dev=async function(){
   await fs.writeJSON('package.json',npm,{spaces:2})
 }
 
-const i18n=async function(){
-  let options = minimist(process.argv.slice(2), {string: 'lang', default: 'en'})
-  if(! /^[a-zA-Z_]{2,}$/.test(options.lang)) options.lang = "en"
-  let i18n=await fs.readFile(`./src/assets/i18n-${options.lang}.md`, 'utf8')
-  let {version}=await fs.readJSON('package.json')
+async function push(){
+  let host = await i18n()
+  let options = minimist(process.argv.slice(2), {string: 'port', default: ''})
+  if(host === "zh"){
+    execFunc(`git add -A && git commit -m ${options.port} && git push gitee master`)
+  }else{
+    execFunc(`git add -A && git commit -m ${options.port} && git push github master`)
+  }
+}
+
+async function i18n(){
+  let options = minimist(process.argv.slice(2), {string: 'host', default: 'en'})
+  if(! /^[a-zA-Z_]{2,}$/.test(options.host)) options.host = "en"
+  let i18n = await fs.readFile(`./src/assets/i18n-${options.host}.md`, 'utf8')
+  let {version} = await fs.readJSON('package.json')
   i18n = i18n.replace(/\/simulate@\d+\.\d+\.\d+\//g, `/simulate@${version}/`)
   await fs.writeFile('readme.md', i18n)
-  if(options.lang === "zh"){
-    execFunc("git remote rename origin github && git remote rename gitee origin")
-  }else{
-    execFunc("git remote rename origin gitee && git remote rename github origin")
-  }
-  
+  return options.host
 }
 
 const execFunc = function(str){
   exec(str, function(err, stdout, stderr){
     if(err === null){
-      console.log("git remote switched successfully!")
+      console.log("Command executed successfully!")
     }else{
       console.log(stdout, stderr)
     }
@@ -104,5 +109,5 @@ const serve=function(){
   }))
 }
 export {
-  serve,simplify,dev,i18n
+  serve,simplify,dev,i18n,push
 }
