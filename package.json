@@ -1,7 +1,7 @@
 {
   "name": "@xlou/simulate",
   "version": "1.0.6",
-  "main": "./dist/es/simulatejs.min.js",
+  "main": "./dist/es/simulate.min.js",
   "module": "./dist/es/simulate.min.js",
   "browser": "./dist/umd/simulate.min.js",
   "exports": {
@@ -20,8 +20,8 @@
     "mock api data",
     "mock backend service",
     "XMLHttpRequest",
-    "simulatejs",
-    "simulatejs.min.js",
+    "simulate",
+    "simulate.min.js",
     "js",
     "JavaScript",
     "Vue",

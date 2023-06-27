@@ -1,3 +1,5 @@
+<div class="en">
+
 ### Introduction
 
 * A pure front-end tool for simulating back-end API interfaces.
@@ -154,6 +156,10 @@ img(256,256,'#f00') // The color supports hexadecimal strings and rgb function s
 
 ![img()](https://github.com/omlou/simulate/assets/73682875/34e30e69-923c-4f40-8a31-f33d57713a36)
 
+</div>
+
+<div class="zh">
+
 ### 介绍
 
 * 纯前端模拟后端 api 接口的工具
@@ -308,3 +314,16 @@ id()
 img(256,256,'#f00') // 颜色支持 16 进制字符串和 rgb 函数字符串
 ```
 ![img()](https://github.com/omlou/simulate/assets/73682875/34e30e69-923c-4f40-8a31-f33d57713a36)
+
+</div>
+<script>
+  let lang = navigator.language
+  lang = lang.substr(0, 2)
+  if(lang == 'zh'){
+    document.querySelector(".zh").style.display = "block"
+    document.querySelector(".en").style.display = "none"
+  }else{
+    document.querySelector(".zh").style.display = "none"
+    document.querySelector(".en").style.display = "block"
+  }
+</script>
