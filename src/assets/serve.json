@@ -1,9 +1,9 @@
 {
   "scripts": {
+    "update": "cross-env NODE_ENV=development && rollup -c",
+    "commit": "gulp simplify --host %npm_config_host% && npm publish --access public & gulp dev",
     "start": "gulp serve",
-    "update": "cross-env NODE_ENV=development rollup -c",
-    "commit": "cross-env TYPE=commit gulp simplify&&npm publish --access public&&gulp dev",
-    "upgrade": "cross-env TYPE=upgrade gulp simplify&&npm publish --access public&&gulp dev"
+    "push": "gulp push --host %npm_config_host% --port %npm_config_port%"
   },
   "devDependencies": {
     "gulp-webserver": "^0.9.1"

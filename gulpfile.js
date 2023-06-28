@@ -4,11 +4,16 @@ import pkg from 'gulp'
 import minimist from 'minimist'
 import {exec} from 'child_process'
 const {src} = pkg
+const i18nMap = new Map([
+  ["zh","gitee"],
+  ["en","github"]
+])
+const ServeURL = './src/assets/serve.json'
 
-const simplify=async function(){
+async function simplify(){
   let npm=await fs.readJSON('package.json')
-  let serve=await fs.readJSON('./src/assets/serve.json')
-  let readme=await fs.readFile('readme.md','utf8')
+  let serve=await fs.readJSON(ServeURL)
+  let options = minimist(process.argv.slice(2), {string: 'host', default: ''})
   /* change package.json */
   delProp(serve,npm)
   function delProp(obj,target){
@@ -27,7 +32,7 @@ const simplify=async function(){
     }
   }
   /* update version */
-  npm.version=updateVersion(npm.version)
+  if(options.host==="upgrade")npm.version=updateVersion(npm.version)
   function updateVersion(str){
     let arr=str.split(".").map(item=>Number(item))
     let thr=arr[2]+1
@@ -46,14 +51,13 @@ const simplify=async function(){
     return arr.join(".")
   }
   /* update readme.md */
-  readme=readme.replace(/\/simulate@\d+\.\d+\.\d+\//g,`/simulate@${npm.version}/`)
+  await i18n("en")
   await fs.writeJSON('package.json',npm,{spaces:2})
-  await fs.writeFile('readme.md',readme)
 }
 
-const dev=async function(){
+async function dev(){
   const npm=await fs.readJSON('package.json')
-  const serve=await fs.readJSON('./src/assets/serve.json')
+  const serve=await fs.readJSON(ServeURL)
   addProp(serve,npm)
   function addProp(obj,target){
     for(let i in obj){
@@ -71,18 +75,18 @@ const dev=async function(){
 }
 
 async function push(){
-  let host = await i18n()
-  let options = minimist(process.argv.slice(2), {string: 'port', default: ''})
-  if(host === "zh"){
-    execFunc(`git add -A && git commit -m ${options.port} && git push gitee master`)
-  }else{
-    execFunc(`git add -A && git commit -m ${options.port} && git push github master`)
-  }
+  let options = minimist(process.argv.slice(2), {
+    string: ['host', 'port'],
+    default: {host: "en", port: ""}
+  })
+  if(! i18nMap.has(options.host)) options.host = "en"
+  await i18n(options.host)
+  execFunc(`git add -A && git commit -m "${options.port}" && git push ${i18nMap.get(options.host)} master`)
 }
 
-async function i18n(){
-  let options = minimist(process.argv.slice(2), {string: 'host', default: 'en'})
-  if(! /^[a-zA-Z_]{2,}$/.test(options.host)) options.host = "en"
+async function i18n(key){
+  let options = key? {host: key} : minimist(process.argv.slice(2), {string: 'host', default: 'en'});
+  if(! i18nMap.has(options.host)) options.host = "en"
   let i18n = await fs.readFile(`./src/assets/i18n-${options.host}.md`, 'utf8')
   let {version} = await fs.readJSON('package.json')
   i18n = i18n.replace(/\/simulate@\d+\.\d+\.\d+\//g, `/simulate@${version}/`)
@@ -90,7 +94,7 @@ async function i18n(){
   return options.host
 }
 
-const execFunc = function(str){
+function execFunc(str){
   exec(str, function(err, stdout, stderr){
     if(err === null){
       console.log("Command executed successfully!")
@@ -100,7 +104,7 @@ const execFunc = function(str){
   })
 }
 
-const serve=function(){
+function serve(){
   return src('./').pipe(webserver({
     host:'127.0.0.1',
     port:'5000',
