@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "es2015"],
-    "types": [],
     "strict": true,
-    "noEmit": true,
-    "downlevelIteration": true,
-    "target": "ES5"
+    "target": "ESNext",
+    "noImplicitThis": false,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "resolveJsonModule": true
   }
 }
