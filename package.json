@@ -7,7 +7,10 @@
   "exports": {
     ".": {
       "types": "./index.d.ts",
-      "require": "./dist/umd/origin.min.js",
+      "require": {
+        "types": "./dist/umd/simulate.d.ts",
+        "default": "./dist/umd/simulate.min.js"
+      },
       "default": "./dist/es/origin.min.js"
     },
     "./es": {
@@ -15,7 +18,7 @@
       "default": "./dist/es/origin.min.js"
     },
     "./umd": {
-      "types": "./index.d.ts",
+      "types": "./dist/umd/simulate.d.ts",
       "default": "./dist/umd/origin.min.js"
     }
   },
@@ -63,6 +66,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@xlou/webtools": "^1.1.3"
+    "@xlou/ajax": "^1.0.2",
+    "@xlou/webtools": "^1.1.9"
   }
 }

@@ -56,6 +56,27 @@ const config = [
       format: 'es',
     },
     plugins: [dts()]
+  },
+  {
+    input: "src/main.umd.ts",
+    output: {
+      file: `dist/umd/${name}.d.ts`,
+      format: 'es',
+    },
+    plugins: [dts()]
+  },
+  {
+    input: "src/app.ts",
+    output:[
+      {
+        file: `docs/js/app.min.js`,
+        format: 'umd',
+        name: globalName,
+        sourcemap: true,
+        plugins: [terser()]
+      },
+    ],
+    plugins: commonPlugins
   }
 ]
 

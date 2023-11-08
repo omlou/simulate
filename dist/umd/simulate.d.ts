@@ -1,5 +1,3 @@
-import { unid } from '@xlou/webtools';
-
 declare global {
     interface XMLHttpRequest {
         "__SIMULATE_SERVICE_OBJECT__": any;
@@ -9,7 +7,6 @@ declare global {
 }
 declare function fixed(n: string | number, f?: (string | number)): string;
 declare function int(n: string | number): number;
-declare const id: typeof unid;
 declare function img(width?: number, height?: number, color?: string): string;
 interface ServiceConfig {
     wait?: number;
@@ -29,4 +26,15 @@ declare namespace serve {
     var setConfig: (obj: ServiceConfig) => void;
 }
 
-export { PathConfig, ServeParams, ServiceConfig, fixed, id, img, int, serve };
+interface ServePropOption {
+    getConfig: typeof serve.getConfig;
+    setConfig: typeof serve.setConfig;
+    fixed: typeof fixed;
+    int: typeof int;
+    img: typeof img;
+}
+type ServeFunction = typeof serve;
+type ServeOption = ServeFunction & ServePropOption;
+declare const _default: ServeOption;
+
+export { _default as default };
