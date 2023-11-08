@@ -1,154 +1,163 @@
-### 介绍
+### Language
 
-* 纯前端模拟后端 api 接口的工具
-* 支持 XMLHttpRequest 和 fetch 请求
-* node 项目打包之后也可以使用
+* [English](https://github.com/omlou/simulate#readme)
+* [简体中文](https://github.com/omlou/simulate/blob/master/docs/md/readme-zh.md)
+* [日本語](https://github.com/omlou/simulate/blob/master/docs/md/readme-ja.md)
+* [한국어](https://github.com/omlou/simulate/blob/master/docs/md/readme-ko.md)
+* [Français](https://github.com/omlou/simulate/blob/master/docs/md/readme-fr.md)
 
-### 使用
+### Introduction
 
-#### 在传统项目中使用
+* A pure front-end tool for simulating backend API interfaces.
+* Supports XMLHttpRequest and fetch requests.
+* Can be used in Node.js projects after bundling.
+
+### Usage
+
+#### Using Script Tags
 
 ```html
-<script src="https://unpkg.com/@xlou/simulate@1.0.7/dist/umd/simulate.min.js"></script>
-<!-- 建议下载下来使用 -->
+<script src="https://unpkg.com/@xlou/simulate@1.0.8/dist/umd/simulate.min.js"></script>
+<!-- It is recommended to download and use the JS file locally -->
 <script>
-  /* 引入了该 js 文件后，会在 window 上赋值 Simulate 对象 */
+  /* After including this JS file, a Simulate object will be assigned to the window */
   Simulate.serve({
-    "/updateById":{
-      type:'post',
-      response({data}){
+    "/updateById": {
+      type: 'post',
+      response({ data }) {
         return {
-          code:200,
-          data:{
-            id:data.id
+          code: 200,
+          data: {
+            id: data.id
           }
-        }
+        };
       }
     }
-  })
+  });
 </script>
 ```
 
-#### 在 Vue 、React 和 Angular 等 node 项目中使用
+#### Using in Node.js and Modular Projects
 
-安装
+Installation
 
-``` bash
+```bash
 npm i @xlou/simulate -S
 ```
 
-main.js / main.ts 中使用
+Import
 
-``` javascript
-import {serve} from '@xlou/simulate'
+```javascript
+import { serve } from '@xlou/simulate';
 
 serve({
-  "/getById":{
-    type:'get',
-    response({params}){
+  "/getById": {
+    type: 'get',
+    response({ params }) {
       return {
-        code:200,
-        data:{
-          id:params.id
+        code: 200,
+        data: {
+          id: params.id
         }
-      }
+      };
     }
   },
-  "/updateById":{
-    type:'post',
-    response({data}){
+  "/updateById": {
+    type: 'post',
+    response({ data }) {
       return {
-        code:200,
-        data:{
-          id:data.id
+        code: 200,
+        data: {
+          id: data.id
         }
-      }
+      };
     }
   }
-})
+});
 ```
 
 ### API
 
 #### serve
 
-定义接口 api
+Define API interfaces.
 
 ```typescript
 interface SetConfig {
-  getConfig:()=>SimulateConfig
-  setConfig:(obj:SimulateConfig)=>void
+  getConfig: () => SimulateConfig;
+  setConfig: (obj: SimulateConfig) => void;
 }
 interface SimulateConfig {
-  wait:number
+  wait: number;
 }
-const serve:((obj:object)=>void)|SetConfig
+const serve: ((obj: object) => void) | SetConfig;
 ```
 
-使用
+Usage
 
 ```js
-/* 配置 api 接口 */
+/* Configure API interfaces */
 serve({
-  "/getById":{ // 设置请求路径
-    type:'get', // 设置请求类型，如：post、get
-    response({url,type,params,data}){
+  "/getById": { // Set the request path
+    type: 'get', // Set the request type, e.g., post, get
+    response({ url, type, params, data }) {
       /* 
-        可通过入参获取请求的参数
-        url：请求地址
-        type：请求类型
-        params：请求的 url 参数
-        data: 请求的 body 参数，一般 post 请求才有
+        You can access the request parameters through the input parameters
+        url: Request URL
+        type: Request type
+        params: URL parameters of the request
+        data: Request body parameters (usually available for POST requests)
       */
     }
   }
-})
+});
 
-/* 查询和配置 Simulate */
+/* Query and configure Simulate */
 serve.setConfig({
-  wait:1000 // 设置请求的响应时间为 1 秒
-})
-serve.getConfig() // 获取配置信息
+  wait: 1000 // Set the response time for requests to 1 second
+});
+serve.getConfig(); // Get configuration information
 // { wait: 1000 }
 ```
 
 #### int
 
-输出一个指定位数的随机整数
+Generate a random integer with a specified number of digits.
 
-`int:(n:string|number)=>number`
+`int: (n: string | number) => number`
 
 ```js
-int(3) // 输出一个3位的随机整数
+int(3); // Generate a random integer with 3 digits
 ```
 
 #### fixed
 
-输出一个随机的小数，可以指定整数位数和小数位数，小数位数不指定默认为 2
+Generate a random decimal number with the option to specify the number of integer and decimal digits. The default number of decimal digits is 2.
 
-`fixed:(n:string|number,f?:string|number)=>string`
+`fixed: (n: string | number, f?: string | number) => string`
 
 ```js
-fixed(8,3) // 输出一个整数位数是 8 ，小数位数是 3 位的随机小数
+fixed(8, 3); // Generate a random decimal number with 8 integer digits and 3 decimal digits
 ```
 
 #### id
 
-生成一个唯一不重复的随机字符串
+Generate a unique and non-repeating random string.
 
-`id:()=>string`
+`id: () => string`
 
 ```js
-id()
+id();
 ```
 
 #### img
 
-生成一张随机的格子图片，返回 Base64 ，可以指定长、宽、颜色，长宽不指定默认为 512 ，颜色默认随机
+Generate a random grid image and return it in Base64 format. You can specify the width, height, and color. If width and height are not specified, they default to 512, and the color is randomly generated.
 
-`img:(width?:number,height?:number,color?:string)=>string`
+`img: (width?: number, height?: number, color?: string) => string`
 
 ```js
-img(256,256,'#f00') // 颜色支持 16 进制字符串和 rgb 函数字符串
+img(256, 256, '#f00'); // The color supports hexadecimal strings and RGB function strings
 ```
+
 ![img()](https://github.com/omlou/simulate/assets/73682875/34e30e69-923c-4f40-8a31-f33d57713a36)
