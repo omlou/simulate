@@ -160,4 +160,4 @@ Generate a random grid image and return it in Base64 format. You can specify the
 img(256, 256, '#f00'); // The color supports hexadecimal strings and RGB function strings
 ```
 
-![img()](https://xlou.gitee.io/images/SimulateImgExample.png)
+![img()](https://omlou.github.io/images/SimulateImgExample.png)
